@@ -2,8 +2,8 @@ from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404, render, redirect
-#from .models import CarModel
-#from .restapis import get_dealer_by_id, get_dealers_from_cf, get_dealers_by_state, get_dealer_reviews_from_cf, post_request
+from .models import CarModel
+from .restapis import get_dealer_by_id, get_dealers_from_cf, get_dealers_by_state, get_dealer_reviews_from_cf, post_request
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
 from datetime import datetime
@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 def get_dealerships(request):
     if request.method == "GET":
         context = {}
-        url = "https://9bebcb01.eu-de.apigw.appdomain.cloud/api/dealership"
+        url = "https://us-south.functions.appdomain.cloud/api/v1/web/e309cdd8-de9c-49d9-bb38-c0a988babe08/dealership-package/get-dealership"
         # Get dealers from the Cloudant DB
         context["dealerships"] = get_dealers_from_cf(url)
 
