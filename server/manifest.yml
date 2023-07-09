@@ -9,3 +9,10 @@
       - route: $HOST.$DOMAIN/static
     memory: 128M
     buildpack: staticfile_buildpack
+  
+  env:
+    env_type: PRODUCTION
+    MANIFEST_NAME: manifest.yml  # retrieved from IBM Cloud Application instance
+    SECRET_KEY: dJC3TWmzrdlc4C-1IcZ7aQ1g5kaoQZQN1c_qzADo243V
+    WATSON_NLU_API_KEY: 5xuU_fVjnVcVsJljLQ3p1giOkORKmFTnzO4H9BKouVij
+    WATSON_NLU_URL: https://api.au-syd.natural-language-understanding.watson.cloud.ibm.com/instances/7314c909-4282-4c48-b46b-aeae59de2e2a
