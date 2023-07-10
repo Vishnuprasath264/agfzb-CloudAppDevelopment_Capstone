@@ -75,7 +75,7 @@ def get_dealer_by_id(url, dealer_id):
     json_result = get_request(url, dealerId=dealer_id)
 
     # Create a CarDealer object from response
-    dealer = json_result["entries"][0]
+    dealer = json_result["rows"][0]
     dealer_obj = CarDealer(address=dealer["address"], city=dealer["city"], full_name=dealer["full_name"],
                            id=dealer["id"], lat=dealer["lat"], long=dealer["long"],
                            short_name=dealer["short_name"],
@@ -154,32 +154,13 @@ def get_dealer_reviews_from_cf(url, dealer_id):
 # Calls the Watson NLU API and analyses the sentiment of a review
 def analyze_review_sentiments(review_text):
     # Watson NLU configuration
+    URL = 'https://api.au-syd.natural-language-understanding.watson.cloud.ibm.com/instances/7314c909-4282-4c48-b46b-aeae59de2e2a'
+    API_KEY = '5xuU_fVjnVcVsJljLQ3p1giOkORKmFTnzO4H9BKouVij'
+    params = json.dumps({"text": review_text, "features": {"sentiment": {}}})
+    response = requests.post(
+        URL, data=params, headers={'Content-Type': 'application/json'}, auth=HTTPBasicAuth('apikey', API_KEY)
+    )
     try:
-        if os.environ['env_type'] == 'PRODUCTION':
-            url = os.environ['WATSON_NLU_URL']
-            api_key = os.environ["WATSON_NLU_API_KEY"]
+        return response.json()['sentiment']['document']['label']
     except KeyError:
-        url = config('WATSON_NLU_URL')
-        api_key = config('WATSON_NLU_API_KEY')
-
-    version = '2021-08-01'
-    authenticator = IAMAuthenticator(api_key)
-    nlu = NaturalLanguageUnderstandingV1(
-        version=version, authenticator=authenticator)
-    nlu.set_service_url(url)
-
-    # get sentiment of the review
-    try:
-        response = nlu.analyze(text=review_text, features=Features(
-            sentiment=SentimentOptions())).get_result()
-        print(json.dumps(response))
-        # sentiment_score = str(response["sentiment"]["document"]["score"])
-        sentiment_label = response["sentiment"]["document"]["label"]
-    except:
-        print("Review is too short for sentiment analysis. Assigning default sentiment value 'neutral' instead")
-        sentiment_label = "neutral"
-
-    # print(sentiment_score)
-    print(sentiment_label)
-
-    return sentiment_label
+        return 'neutral'

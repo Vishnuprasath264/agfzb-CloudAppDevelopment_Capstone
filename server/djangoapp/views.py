@@ -121,7 +121,7 @@ def add_review(request, dealer_id):
     if request.user.is_authenticated:
         # GET request renders the page with the form for filling out a review
         if request.method == "GET":
-            url = f"https://5b93346d.us-south.apigw.appdomain.cloud/dealerships/dealer-get?dealerId={dealer_id}"
+            url = f"https://us-south.functions.appdomain.cloud/api/v1/web/e309cdd8-de9c-49d9-bb38-c0a988babe08/dealership-package/get_dealer_by_id?dealerId={dealer_id}"
             # Get dealer details from the API
             context = {
                 "cars": CarModel.objects.all(),
@@ -150,7 +150,7 @@ def add_review(request, dealer_id):
             else: 
                 review["purchase_date"] = None
 
-            url = "https://9bebcb01.eu-de.apigw.appdomain.cloud/api/review"  # API Cloud Function route
+            url = "https://us-south.functions.appdomain.cloud/api/v1/web/e309cdd8-de9c-49d9-bb38-c0a988babe08/default/review"  # API Cloud Function route
             json_payload = {"review": review}  # Create a JSON payload that contains the review data
 
             # Performing a POST request with the review
