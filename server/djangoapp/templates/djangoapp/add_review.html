@@ -3,7 +3,7 @@
 {% block content %}
 
 <div class="container">
-    <form action="/djangoapp/dealer/{{dealer.id}}/add_review" method="post">
+    <form action="{% url 'djangoapp:add_review' dealer.id %}" method="post">
         {% csrf_token %}
         <div class="form-group">
             <label for="content">Enter the review content:</label>
@@ -18,7 +18,7 @@
             <label>Select your car (model-make-year):</label>
             <select name="car" id="car" class="form-select" required>
                 {% for car in cars %}
-                <option selected value={{car.id}}>{{car.name}}-{{car.car_make.name}}-{{ car.year|date:"Y" }}
+                <option selected value={{car.id}}>{{car.name}}-{{car.car_make.name}}-{{ car.year }}
                 </option>
                 {% endfor %}
             </select>

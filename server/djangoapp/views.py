@@ -132,31 +132,30 @@ def add_review(request, dealer_id):
         # POST request posts the content in the review submission form to the Cloudant DB using the post_review Cloud Function
         if request.method == "POST":
             form = request.POST
+            if 'purchasecheck' in request.POST:
+                was_purchased = True
+            else:
+                was_purchased = False
             review = dict()
-            review["name"] = f"{request.user.first_name} {request.user.last_name}"
+            review["time"] = datetime.utcnow().isoformat()
+            review["name"] = request.user.first_name + request.user.last_name
             review["dealership"] = dealer_id
-            review["review"] = form["content"]
-            review["purchase"] = form.get("purchasecheck")
-            if review["purchase"]:
-                review["purchase_date"] = datetime.strptime(form.get("purchasedate"), "%m/%d/%Y").isoformat()
+            review["review"] = form['content']
+            review["purchase"] = was_purchased
+            review["purchase_date"] = form['purchasedate']
             car = CarModel.objects.get(pk=form["car"])
             review["car_make"] = car.car_make.name
             review["car_model"] = car.name
-            review["car_year"] = car.year
+            review["car_year"]= car.year
+            json_payload = {"review": review}
             
             # If the user bought the car, get the purchase date
-            if form.get("purchasecheck"):
-                review["purchase_date"] = datetime.strptime(form.get("purchasedate"), "%m/%d/%Y").isoformat()
-            else: 
-                review["purchase_date"] = None
-
-            url = "https://us-south.functions.appdomain.cloud/api/v1/web/e309cdd8-de9c-49d9-bb38-c0a988babe08/default/review"  # API Cloud Function route
+            json_payload={}
+            url = "https://us-south.functions.appdomain.cloud/api/v1/web/e309cdd8-de9c-49d9-bb38-c0a988babe08/default/add_review/"  # API Cloud Function route
             json_payload = {"review": review}  # Create a JSON payload that contains the review data
 
             # Performing a POST request with the review
-            result = post_request(url, json_payload, dealerId=dealer_id)
-            if int(result.status_code) == 200:
-                print("Review posted successfully.")
+            result = post_request(url, json_payload, dealer_id=dealer_id)
 
             # After posting the review the user is redirected back to the dealer details page
             return redirect("djangoapp:dealer_details", dealer_id=dealer_id)

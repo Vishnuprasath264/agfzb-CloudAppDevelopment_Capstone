@@ -37,15 +37,17 @@ def get_request(url, api_key=False, **kwargs):
 
 # Function for making HTTP POST requests
 def post_request(url, json_payload, **kwargs):
-    print(f"POST to {url}")
+    print(json_payload)
+    print("POST from {} ".format(url))
     try:
         response = requests.post(url, params=kwargs, json=json_payload)
+        status_code = response.status_code
+        print("With status {} ".format(status_code))
+        json_data = json.loads(response.text)
+        print(json_data)
+        return json_data
     except:
-        print("An error occurred while making POST request. ")
-    status_code = response.status_code
-    print(f"With status {status_code}")
-
-    return response
+        print("Network exception occurred")
 
 
 # Gets all dealers from the Cloudant DB with the Cloud Function get-dealerships
