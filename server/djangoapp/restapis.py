@@ -45,7 +45,6 @@ def post_request(url, json_payload, **kwargs):
         print("With status {} ".format(status_code))
         json_data = json.loads(response.text)
         print(json_data)
-        return json_data
     except:
         print("Network exception occurred")
 
@@ -110,7 +109,7 @@ def get_dealer_reviews_from_cf(url, dealer_id):
     results = []
     # Perform a GET request with the specified dealer id
     json_result = get_request(url, dealerId=dealer_id)
-
+    print(json_result)
     if json_result:
         # Get all review data from the response
         reviews = json_result["rows"]
@@ -119,7 +118,7 @@ def get_dealer_reviews_from_cf(url, dealer_id):
             # Create a DealerReview object from the data
             # These values must be present
             review_content = review["review"]
-            id = review["_id"]
+            id = review["id"]
             name = review["name"]
             purchase = review["purchase"]
             dealership = review["dealership"]
